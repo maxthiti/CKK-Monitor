@@ -23,4 +23,16 @@ if ! command -v lsof >/dev/null 2>&1 || ! lsof -iTCP:8080 -sTCP:LISTEN >/dev/nul
 fi
 
 sleep 5
-xdg-open "$URL" >/dev/null 2>&1 || true
+
+if command -v google-chrome >/dev/null 2>&1; then
+  nohup google-chrome --new-window --start-fullscreen "$URL" >/dev/null 2>&1 &
+elif command -v chromium-browser >/dev/null 2>&1; then
+  nohup chromium-browser --new-window --start-fullscreen "$URL" >/dev/null 2>&1 &
+elif command -v chromium >/dev/null 2>&1; then
+  nohup chromium --new-window --start-fullscreen "$URL" >/dev/null 2>&1 &
+elif command -v firefox >/dev/null 2>&1; then
+  # Firefox has no reliable start-fullscreen flag like Chromium; open normally.
+  nohup firefox --new-window "$URL" >/dev/null 2>&1 &
+else
+  xdg-open "$URL" >/dev/null 2>&1 || true
+fi
